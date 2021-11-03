@@ -1,49 +1,13 @@
-const {readFileSync} = require("fs");
-const {writeFile} = require("fs").promises;
 const express = require("express");
+const {
+  getAllTour, getTour, addTour, checkBody,
+  deleteRouter, updateTour, checkId
+} = require("../controllers/tourController");
 
-const toursRouter = express.Router();
+const router = express.Router();
 
-const TOURS_PATH = `${__dirname}/../dev-data/data/tours-simple.json`;
+router.param("id", checkId);
+router.route("/").post(checkBody, addTour).get(getAllTour);
+router.route("/:id").get(getTour).patch(updateTour).delete(deleteRouter);
 
-const tours = JSON.parse(readFileSync(TOURS_PATH));
-
-toursRouter.get("/tours", (req, res) => {
-    res.json(
-        {
-            message: "success",
-            results: tours.length,
-            data: {
-                tours
-            }
-        }
-    )
-})
-
-    .get("/tours/:id", (req, res) => {
-        const {id} = req.params;
-        const tour = tours[Number(id)];
-        res.json({
-            message: "success",
-            data: {
-                tour
-            }
-        })
-    })
-
-    .post("/tours", async (req, res) => {
-        const newId = tours[tours.length - 1].id + 1;
-        const newTour = Object.assign({id: newId}, req.body);
-        tours.push(newTour);
-        await writeFile(TOURS_PATH, JSON.stringify(tours));
-        res.status(201).json(
-            {
-                message: "success",
-                data: {
-                    tour: newTour
-                }
-            }
-        )
-    })
-
-module.exports = toursRouter;
+module.exports = router;
