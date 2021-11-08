@@ -4,7 +4,10 @@ const usersRouter = require("./routes/users");
 
 const app = express();
 
+
+
 app.use(express.json());
 app.use("/api/tours", toursRouter);
 app.use("/api/users", usersRouter);
-app.listen(3000);
+
+module.exports = app;
