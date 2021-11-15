@@ -9,7 +9,6 @@ async function getAllTour(req, res)
 
   try
   {
-    console.log(req.query);
     const query = new APIFeatures(Tour.find(), req.query).filter().limitFields().paginate().sort().getQuery();
     const tour = await query;
 
@@ -142,6 +141,34 @@ function aliasTopTour(req, res, next)
   req.sorted = true;
   next();
 
+}
+
+async function getTourStats(req,res)
+{
+    try {
+        const stats = Tour.aggregate(
+            [
+                {
+                    $match: {ratingsAverage: {$gte: 4.5}}
+                },
+                {
+                    $group: {
+                        _id: null,
+                        avgRating: {$avg: '$ratingsAverage'}
+                    }
+                }
+            ]
+        );
+    }
+    catch (error)
+    {
+        res.status(404).json(
+            {
+                status: "fail",
+                message: ERROR_MESSAGE
+            }
+        )
+    }
 }
 
 
