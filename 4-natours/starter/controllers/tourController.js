@@ -83,7 +83,6 @@ async function addTour(req, res)
     )
   }
 
-
 }
 
 async function updateTour(req, res)
@@ -143,35 +142,97 @@ function aliasTopTour(req, res, next)
 
 }
 
-async function getTourStats(req,res)
+async function getTourStats(req, res)
 {
-    try {
-        const stats = Tour.aggregate(
-            [
-                {
-                    $match: {ratingsAverage: {$gte: 4.5}}
-                },
-                {
-                    $group: {
-                        _id: null,
-                        avgRating: {$avg: '$ratingsAverage'}
-                    }
-                }
-            ]
-        );
-    }
-    catch (error)
-    {
-        res.status(404).json(
-            {
-                status: "fail",
-                message: ERROR_MESSAGE
+  try
+  {
+    const stats = await Tour.aggregate(
+        [
+          {
+            $match: {ratingsAverage: {$gte: 4.5}}
+          },
+          {
+            $group: {
+              _id: "$price",
+              num: {$sum: 1},
+              ratingsQuantity: {$sum: "$ratingsQuantity"},
+              avgRating: {$avg: "$ratingsAverage"},
+              avgPrice: {$avg: "$price"},
+              lowestPrice: {$min: "$price"}
             }
-        )
-    }
+          },
+          {
+            $sort: {avgRating: 1}
+          }
+        ]
+    );
+    res.json(stats);
+  }
+  catch (error)
+  {
+    res.status(404).json(
+        {
+          status: "fail",
+          message: ERROR_MESSAGE
+        }
+    )
+  }
 }
 
+async function getMonthlyPlan(req, res)
+{
+  try
+  {
+    const year = Number(req.params.year);
+    const plan = await Tour.aggregate([
+      {
+        $unwind: "$startDates"
+      },
+      {
+        $match:
+            {
+              startDates: {
+                $lt: new Date(year + 1, 0, 1),
+                $gt: new Date(year - 1, 11, 31)
+              }
+            }
+      },
+      {
+        $group:
+            {
+              _id: {$month: "$startDates"},
+              numTourStarts: {$sum: 1},
+              tours: {$push: "$name"}
+            }
+      },
+      {
+        $addFields: {month: "$_id"}
+      }
+      ,
+      {
+        $project: {_id: 0}
+      },
+      {
+        $sort: {numTourStarts: -1}
+      }
 
+    ]);
+
+    res.json(plan);
+
+  }
+
+  catch (error)
+  {
+    res.status(404).json(
+        {
+          status: "fail",
+          message: ERROR_MESSAGE
+        }
+    )
+  }
+
+}
 
 module.exports = {
 
@@ -180,6 +241,8 @@ module.exports = {
   addTour,
   updateTour,
   deleteTour,
-  aliasTopTour
+  aliasTopTour,
+  getTourStats,
+  getMonthlyPlan
 
 };
