@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 
 // Reading Env Variables
-dotenv.config({path: "./config.env"});
+dotenv.config({path: __dirname + "/config.env"});
 
 const {DB_STRING, DB_PASSWORD} = process.env;
 

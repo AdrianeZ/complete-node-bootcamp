@@ -78,7 +78,7 @@ async function addTour(req, res)
     res.status(400).json(
         {
           status: "fail",
-          message: ERROR_MESSAGE
+          message: error
         }
     )
   }

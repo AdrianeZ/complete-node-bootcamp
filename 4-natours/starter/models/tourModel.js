@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 
 const VALIDATION_STRING = "must be specified"
 
+
+
 const tourSchema = new mongoose.Schema(
     {
       name: {
@@ -40,13 +42,22 @@ const tourSchema = new mongoose.Schema(
             type: Number,
             required: [true, `price ${VALIDATION_STRING}`]
           },
-      priceDiscount: Number,
+      priceDiscount:
+          {
+            type: Number,
+            validate: {
+              validator: function (val) { return val < this.price},
+              message: "Price Discount can't be higher than price"
+            }
+
+          },
 
       summary:
           {
             type: "String",
             trim: true,
-            required: [true, `summary ${VALIDATION_STRING}`]
+            required: [true, `summary ${VALIDATION_STRING}`],
+
           },
       description:
           {
