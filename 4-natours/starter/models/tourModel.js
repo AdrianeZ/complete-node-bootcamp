@@ -10,7 +10,8 @@ const tourSchema = new mongoose.Schema(
         type: String,
         required: [true, `name ${VALIDATION_STRING}`],
         unique: true,
-        trim: true
+        trim: true,
+        minlength: [5, "Tour name must be at least 5 characters"]
       },
       ratingsAverage:
           {
