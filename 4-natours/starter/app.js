@@ -11,10 +11,9 @@ app.use(express.static("public"));
 app.use("/api/tours", toursRouter);
 app.use("/api/users", usersRouter);
 
-app.all("*", (req, res, next) => {
+app.all("*",  (req, res, next) => {
     // next(new AppError(`Can't find ${req.originalUrl} Route`, 404));
     throw new AppError(`Can't find ${req.originalUrl} Route`, 404);
-
 })
 
 
