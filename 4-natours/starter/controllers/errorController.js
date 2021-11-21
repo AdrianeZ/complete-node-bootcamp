@@ -2,7 +2,7 @@ const AppError = require("../utils/AppError");
 
 function sendErrorResponse(err, res)
 {
-  res.status(err.statusCode).json(
+  res.status(err.statusCode ?? 500).json(
       {
         status: err.status ?? 500,
         message: err.message ?? "Something went Wrong"
@@ -36,6 +36,10 @@ function errorHandler(err, req, res, next)
         message += err.errors[error].message + " "; //TODO
       }
       sendErrorResponse(new AppError(message, 400), res);
+    }
+    else
+    {
+      sendErrorResponse(new AppError("Something went Wrong"), res);
     }
   }
 }

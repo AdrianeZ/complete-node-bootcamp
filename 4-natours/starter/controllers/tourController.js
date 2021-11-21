@@ -6,6 +6,7 @@ const ERROR_MESSAGE = "something went wrong";
 
 async function getAllTour(req, res, next)
 {
+
   try
   {
     const query = new APIFeatures(Tour.find(), req.query).filter().limitFields().paginate().sort().getQuery();
@@ -130,7 +131,6 @@ function aliasTopTour(req, res, next)
   req.query.sort = "-ratingsAverage,price";
   req.sorted = true;
   next();
-
 }
 
 async function getTourStats(req, res)
