@@ -55,7 +55,7 @@ const tourSchema = new mongoose.Schema(
 
       summary:
           {
-            type: "String",
+            type: String,
             trim: true,
             required: [true, `summary ${VALIDATION_STRING}`],
 
