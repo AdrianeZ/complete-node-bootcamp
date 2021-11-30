@@ -25,7 +25,13 @@ function errorHandler(err, req, res, next)
     }
     else if (err.code === 11000) //Duplicate name Error (Not included in Validation Error)
     {
-      const message = `Tour with name ${err.keyValue.name} already exists please enter another name`;
+      let message = "";
+      const duplicates = Object.entries(err.keyValue);
+      duplicates.forEach(([field, value]) =>
+      {
+        message += `${field} with value ${value} already exists`;
+      })
+
       sendErrorResponse(new AppError(message, 400), res);
     }
     else if (err.name === "ValidationError")
