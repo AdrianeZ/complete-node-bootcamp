@@ -4,7 +4,7 @@ function sendErrorResponse(err, res)
 {
   res.status(err.statusCode ?? 500).json(
       {
-        status: err.status ?? 500,
+        status: err.status ?? "error",
         message: err.message ?? "Something went Wrong"
       }
   );
