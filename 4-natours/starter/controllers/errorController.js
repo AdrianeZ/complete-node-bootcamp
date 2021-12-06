@@ -27,8 +27,7 @@ function errorHandler(err, req, res, next)
     {
       let message = "";
       const duplicates = Object.entries(err.keyValue);
-      duplicates.forEach(([field, value]) =>
-      {
+      duplicates.forEach(([field, value]) => {
         message += `${field} with value ${value} already exists`;
       })
 
@@ -43,6 +42,12 @@ function errorHandler(err, req, res, next)
       }
       sendErrorResponse(new AppError(message, 400), res);
     }
+
+    else if (err.name = "JsonWebTokenError" || err.name === "TokenExpiredError")
+    {
+      sendErrorResponse(new AppError("Invalid Token please log in again", 401), res);
+    }
+
     else
     {
       sendErrorResponse(new AppError("Something went Wrong"), res);
