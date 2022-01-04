@@ -2,6 +2,7 @@ const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 const AppError = require("../utils/AppError");
 const {promisify} = require("util")
+const photoValidator = require("../utils/validators/photoValidator");
 
 function signToken(id)
 {
@@ -15,14 +16,15 @@ async function signUp(req, res, next)
   try
   {
 
-    const {name, email, password, passwordConfirm, passwordChangedAt} = req.body;
+    const {name, email, password, passwordConfirm, photo} = req.body;
+    photoValidator(photo);
     const newUser = await User.create(
         {
           name,
           email,
           password,
           passwordConfirm,
-          passwordChangedAt
+          photo
         }
     );
 
@@ -94,7 +96,7 @@ async function protect(req, res, next)
     const user = await User.findById(payload.id);
     if (!user) throw new AppError("Token is invalid because user does not exists already", 401);
     const invalidTimestamps = user.verifyChangedPassword(payload.iat);
-    if (invalidTimestamps) throw new AppError("Token is invalid because password was changed", 401);
+    if (invalidTimestamps) throw new AppError("Token is invalid because password was changed please regenerate your token", 401);
   }
   catch (error)
   {

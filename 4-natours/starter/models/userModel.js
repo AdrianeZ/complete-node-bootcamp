@@ -16,8 +16,8 @@ const userSchema = new mongoose.Schema(
           {
             type: String,
             unique: true,
-            lowercase: true,
             trim: true,
+            lowercase: true,
             required: [true, "email must be set"],
             validate:
                 {
@@ -44,7 +44,7 @@ const userSchema = new mongoose.Schema(
             validate:
                 {
                   validator: passwordValidator,
-                  message: "Confirmed Password is not Equal!!!"
+                  message: "Passwords must be the same!!!"
                 }
           },
       passwordChangedAt:
