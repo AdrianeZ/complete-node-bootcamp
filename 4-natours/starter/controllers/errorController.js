@@ -43,10 +43,16 @@ function errorHandler(err, req, res, next)
       sendErrorResponse(new AppError(message, 400), res);
     }
 
-    else if (err.name = "JsonWebTokenError" || err.name === "TokenExpiredError")
+    else if (err.name === "JsonWebTokenError")
     {
       sendErrorResponse(new AppError("Invalid Token please log in again", 401), res);
     }
+
+    else if(err.name === "TokenExpiredError")
+    {
+      sendErrorResponse(new AppError("Token has expired please log in again", 401), res);
+    }
+
 
     else
     {

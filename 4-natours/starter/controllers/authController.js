@@ -16,7 +16,7 @@ async function signUp(req, res, next)
   try
   {
 
-    const {name, email, password, passwordConfirm, photo} = req.body;
+    const {name, email, password, passwordConfirm, photo, passwordChangedAt} = req.body;
     photoValidator(photo);
     const newUser = await User.create(
         {
@@ -29,7 +29,7 @@ async function signUp(req, res, next)
     );
 
     const token = signToken(newUser._id);
-
+    newUser.password = undefined;
     res.status(201).json(
         {
           status: "success",
@@ -51,7 +51,7 @@ async function signUp(req, res, next)
 
 async function logIn(req, res, next)
 {
-  let {email, password} = req.body;
+  const {email, password} = req.body;
 
   if (!email || !password)
   {
@@ -104,7 +104,6 @@ async function protect(req, res, next)
   }
 
   next();
-
 }
 
 module.exports =
