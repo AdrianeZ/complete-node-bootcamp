@@ -1,4 +1,4 @@
 /node_modules
-.config.env
+config.env
 
 /4-natours/starter/node_modules
