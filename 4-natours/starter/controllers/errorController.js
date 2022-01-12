@@ -12,6 +12,7 @@ function sendErrorResponse(err, res)
 
 function errorHandler(err, req, res, next)
 {
+  console.log(err);
   if (err instanceof AppError)
   {
     sendErrorResponse(err, res);
